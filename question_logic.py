@@ -16,15 +16,28 @@ def display_question(app):
 
         # 問題情報の表示
         app.question_info_label.config(
-            text=f"問題年度: {app.current_question['問題年度']} / 問題番号: {app.current_question['問題番号']}"
+            text=f"問題年度: {app.current_question['問題年度']} / 通算: {app.current_question['通算']} / 問題番号: {app.current_question['問題番号']} / 種別: {app.current_question['学科種別']}"
         )
 
         # 各選択肢の表示
         for idx, option in enumerate(app.current_question['選択肢']):
-            app.answer_buttons[idx].config(text=option, state=tk.NORMAL)
+            if idx < len(app.answer_buttons):  # ボタンの数を選択肢に合わせる
+                app.answer_buttons[idx].config(text=option, state=tk.NORMAL)
+            else:
+                # 必要なボタンが足りない場合、新しいボタンを生成するロジックが必要です
+                pass
 
         # 結果表示をクリア
         app.result_label.config(text="")
+
+        # 解説、カテゴリ、キーワードなどの設定
+        app.explanation_text.delete('1.0', tk.END)  # テキストをクリア
+        app.explanation_text.insert(tk.END, f"解説: {' / '.join(app.current_question['解説'])}")
+
+        # カテゴリとキーワードはLabelウィジェットを使っている場合
+        app.category_label.config(text=f"カテゴリ: {app.current_question['カテゴリ']}")
+        app.keyword_label.config(text=f"キーワード: {', '.join(app.current_question['キーワード'])}")
+
 
 def select_question(app):
     """

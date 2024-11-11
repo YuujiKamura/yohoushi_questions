@@ -51,6 +51,13 @@ class QuizApp:
         self.explanation_text = tk.Text(self.frame, height=10, state=tk.DISABLED, wrap=tk.WORD)
         self.explanation_text.pack(fill=tk.BOTH, expand=True)
 
+        # QuizApp クラスの初期化メソッド内
+        self.category_label = tk.Label(self.root, text="")
+        self.category_label.pack(anchor="w")  # 適切なレイアウトを指定してください
+
+        self.keyword_label = tk.Label(self.root, text="")
+        self.keyword_label.pack(anchor="w")  # 適切なレイアウトを指定してください
+
         # 初期表示の問題
         display_question(self)
 
