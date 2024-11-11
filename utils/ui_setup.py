@@ -5,39 +5,6 @@ from utils.get_sorted_question_files import get_category_from_file
 from utils.ui_answer_buttons import setup_answer_buttons
 from utils.explanation_buttons import setup_or_refresh_explanation_buttons
 
-def setup_ui(app):
-    logging.debug("Starting UI setup")
-
-    # 画面の幅と高さを取得して、半分の幅でウィンドウサイズを設定
-    screen_width = app.root.winfo_screenwidth()  # 画面の幅を取得
-    screen_height = app.root.winfo_screenheight()  # 画面の高さを取得
-    app_width = screen_width // 2  # 幅を半分に
-    app_height = screen_height  # 高さはそのまま全体に設定
-
-    # ウィンドウのサイズを設定（画面の半分の幅、全体の高さ）
-    app.root.geometry(f'{app_width}x{app_height}')
-    app.root.resizable(False, False)  # ウィンドウサイズを変更不可にする
-
-    # フォントの設定（ここで全体のフォントサイズを変更可能）
-    default_font = font.Font(family="Helvetica", size=14)
-
-    app.frame = tk.Frame(app.root, padx=10, pady=10)
-    app.frame.pack(fill=tk.BOTH, expand=True)
-
-    # 各UI要素にフォントを設定
-    setup_question_selection_ui(app, default_font)  # default_fontを渡す
-    setup_buttons(app, default_font)
-    setup_labels(app, default_font)
-    setup_answer_buttons(app, default_font)
-
-    # 解説用のテキストウィジェットを初期化（折り返し設定を追加）
-    app.explanation_text = tk.Text(app.frame, height=10, state=tk.DISABLED, wrap=tk.WORD, font=default_font)
-    app.explanation_text.pack(fill=tk.BOTH, expand=True)
-
-    # 解説ボタンをセットアップまたはリフレッシュ
-    setup_or_refresh_explanation_buttons(app, [])
-
-    logging.debug("UI setup complete")
 
 
 def setup_question_selection_ui(app, default_font):

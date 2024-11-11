@@ -12,7 +12,13 @@ def display_question(app):
         app.current_question = load_question(file_path)
 
         # 問題文の表示
-        app.question_label.config(text=f"問題: {app.current_question['問題']}")
+        question_text = app.current_question['問題']
+        # 問題肢が存在する場合のみ改行で連結
+        if '問題肢' in app.current_question and app.current_question['問題肢']:
+            options_text = "\n".join(app.current_question['問題肢'])
+            app.question_label.config(text=f"問題: {question_text}\n\n{options_text}")
+        else:
+            app.question_label.config(text=f"問題: {question_text}")
 
         # 問題情報の表示
         app.question_info_label.config(
