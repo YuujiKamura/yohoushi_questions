@@ -16,7 +16,8 @@ def display_question(app):
         # 問題肢が存在する場合のみ改行で連結
         if '問題肢' in app.current_question and app.current_question['問題肢']:
             options_text = "\n".join(app.current_question['問題肢'])
-            app.question_label.config(text=f"問題: {question_text}\n\n{options_text}")
+            app.question_label.config(text=f"問題: {question_text}\n\n{options_text}", justify='left')
+            app.question_label.pack(anchor="w")
         else:
             app.question_label.config(text=f"問題: {question_text}")
 

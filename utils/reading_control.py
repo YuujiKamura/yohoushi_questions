@@ -1,6 +1,6 @@
 import pyttsx3
 import threading
-
+import logging
 
 def stop_reading(self):
     # stop_eventがセットされると読み上げを終了する
@@ -26,10 +26,25 @@ def read_aloud_option(app, option_idx):
     :param app: The application instance containing the options and engine.
     :param option_idx: The index of the option to be read aloud.
     """
+    logging.debug(f"app object type: {type(app)}")
+    logging.debug(f"app attributes: {dir(app)}")
+
     if not app.reading_lock.locked():
         app.stop_event.clear()
         app.update_status_label("読み上げ状態: 読み上げ中")
-        threading.Thread(target=_read_aloud, args=(app, app.current_question['選択肢'][option_idx],)).start()
+
+        # 問題肢がある場合は問題肢を優先して取得、ない場合は選択肢を使用
+        if '問題肢' in app.current_question and option_idx < len(app.current_question['問題肢']):
+            option_text = app.current_question['問題肢'][option_idx]
+        elif '選択肢' in app.current_question and option_idx < len(app.current_question['選択肢']):
+            option_text = app.current_question['選択肢'][option_idx]
+        else:
+            option_text = "選択肢が見つかりません"
+
+        logging.debug(f"Reading aloud option: {option_text}")
+
+        # 新しいスレッドで読み上げを実行
+        threading.Thread(target=_read_aloud, args=(app, option_text,)).start()
 
 def read_aloud_reason(app):
     """
@@ -49,7 +64,6 @@ def _read_aloud(app, text):
     """
     with app.reading_lock:
         if not app.stop_event.is_set():  # Only start reading if stop event is not set
-            app.engine = pyttsx3.init()  # Reinitialize the engine
             app.engine.say(text)
             app.engine.runAndWait()
         app.update_status_label("読み上げ状態: 停止中")

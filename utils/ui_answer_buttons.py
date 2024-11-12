@@ -1,16 +1,23 @@
 import tkinter as tk
 from functools import partial
 import logging
+from utils.reading_control import read_aloud_option
 
 # クリップボードにテキストをコピーする関数
 def copy_to_clipboard(app, option_idx):
     if hasattr(app, 'current_question') and app.current_question:
-        if option_idx < len(app.current_question['選択肢']):
+        # 問題肢が存在する場合は問題肢からコピー、存在しない場合は選択肢からコピー
+        if '問題肢' in app.current_question and option_idx < len(app.current_question['問題肢']):
+            text = app.current_question['問題肢'][option_idx]
+        elif '選択肢' in app.current_question and option_idx < len(app.current_question['選択肢']):
             text = app.current_question['選択肢'][option_idx]
-            app.root.clipboard_clear()  # クリップボードをクリア
-            app.root.clipboard_append(text)  # クリップボードにテキストをコピー
-            app.root.update()  # クリップボードの更新
-            app.update_status_label(f"選択肢 {option_idx + 1} をクリップボードにコピーしました")
+        else:
+            text = "選択肢が見つかりません"
+
+        app.root.clipboard_clear()  # クリップボードをクリア
+        app.root.clipboard_append(text)  # クリップボードにテキストをコピー
+        app.root.update()  # クリップボードの更新
+        app.update_status_label(f"選択肢 {option_idx + 1} をクリップボードにコピーしました")
 
 # UIのセットアップ（answer_buttonsの部分）
 def setup_answer_buttons(app, default_font):
@@ -31,12 +38,14 @@ def setup_answer_buttons(app, default_font):
         app.answer_buttons.append(button)
 
         # 読み上げボタン（wraplengthを変数で管理）
-        read_button = tk.Button(button_frame, text=f"選択肢 {i + 1} を読み上げ", command=partial(app.read_aloud_option, i),
+        read_button = tk.Button(button_frame, text=f"選択肢 {i + 1} を読み上げ",
+                                command=partial(read_aloud_option, app, i),
                                 wraplength=wraplength_value)  # wraplengthを変数から設定
         read_button.grid(row=i, column=1, sticky="w", padx=5, pady=2)
 
         # クリップボードにコピーするボタン（wraplengthを変数で管理）
-        copy_button = tk.Button(button_frame, text=f"選択肢 {i + 1} をコピー", command=partial(copy_to_clipboard, app, i),
+        copy_button = tk.Button(button_frame, text=f"選択肢 {i + 1} をコピー",
+                                command=partial(copy_to_clipboard, app, i),
                                 wraplength=wraplength_value)  # wraplengthを変数から設定
         copy_button.grid(row=i, column=2, sticky="w", padx=5, pady=2)
 
