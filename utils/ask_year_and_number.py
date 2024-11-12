@@ -1,16 +1,20 @@
-from tkinter import Toplevel, Label, Entry, Button
+from tkinter import Toplevel, Label, Entry, Button, messagebox
 
 # カスタムダイアログウィンドウを作成する関数
 def ask_year_and_number():
     def submit():
-        year_value = year_entry.get()
-        number_value = number_entry.get()
+        year_value = year_entry.get().strip()
+        number_value = number_entry.get().strip()
         if year_value and number_value:
             result[0] = (year_value, number_value)
-        dialog.destroy()
+            dialog.destroy()
+        else:
+            messagebox.showwarning("入力エラー", "年度と問題番号を入力してください。")
 
     dialog = Toplevel()
     dialog.title("年度と問題番号の入力")
+    dialog.transient()  # 親ウィンドウに対してモーダルな挙動に
+    dialog.grab_set()   # 他のウィンドウの操作を一時的に無効にする
 
     Label(dialog, text="年度:").grid(row=0, column=0, padx=5, pady=5)
     year_entry = Entry(dialog)
